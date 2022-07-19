@@ -1,3 +1,16 @@
+INSTRUCCIONES
+1. composer from [composer](https://getcomposer.org/download/)
+2. XAMPP O WAMPP
+3. Opcional nodejs (npm)
+4. En visual hacer consola de desarrollo dentro del proyecto y escribir composer install
+5. Opcional php artisan serve para desplegar el servidor
+6. Opcional si tiene XAMPP desplegar el repo en htdocs y escribir la ruta en el navegador: localhost/nombreProjecto/(si tiene subcarpetas)/public
+6.1 Si tiene visualiza una pantalla que dice laravel con algunos elementos todo salio OK
+
+Happy Hacking!
+
+
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
 <p align="center">
