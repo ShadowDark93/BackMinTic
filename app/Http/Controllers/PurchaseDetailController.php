@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\PurchaseDetail;
-use App\Http\Requests\StorePurchaseDetailRequest;
-use App\Http\Requests\UpdatePurchaseDetailRequest;
+use Illuminate\Http\Request;
 
+/**
+ * Class PurchaseDetailController
+ * @package App\Http\Controllers
+ */
 class PurchaseDetailController extends Controller
 {
     /**
@@ -15,7 +18,10 @@ class PurchaseDetailController extends Controller
      */
     public function index()
     {
-        //
+        $purchaseDetails = PurchaseDetail::paginate();
+
+        return view('purchase-detail.index', compact('purchaseDetails'))
+            ->with('i', (request()->input('page', 1) - 1) * $purchaseDetails->perPage());
     }
 
     /**
@@ -25,62 +31,79 @@ class PurchaseDetailController extends Controller
      */
     public function create()
     {
-        //
+        $purchaseDetail = new PurchaseDetail();
+        return view('purchase-detail.create', compact('purchaseDetail'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StorePurchaseDetailRequest  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorePurchaseDetailRequest $request)
+    public function store(Request $request)
     {
-        //
+        request()->validate(PurchaseDetail::$rules);
+
+        $purchaseDetail = PurchaseDetail::create($request->all());
+
+        return redirect()->route('purchase-details.index')
+            ->with('success', 'PurchaseDetail created successfully.');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\PurchaseDetail  $purchaseDetail
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function show(PurchaseDetail $purchaseDetail)
+    public function show($id)
     {
-        //
+        $purchaseDetail = PurchaseDetail::find($id);
+
+        return view('purchase-detail.show', compact('purchaseDetail'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\PurchaseDetail  $purchaseDetail
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(PurchaseDetail $purchaseDetail)
+    public function edit($id)
     {
-        //
+        $purchaseDetail = PurchaseDetail::find($id);
+
+        return view('purchase-detail.edit', compact('purchaseDetail'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdatePurchaseDetailRequest  $request
-     * @param  \App\Models\PurchaseDetail  $purchaseDetail
+     * @param  \Illuminate\Http\Request $request
+     * @param  PurchaseDetail $purchaseDetail
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatePurchaseDetailRequest $request, PurchaseDetail $purchaseDetail)
+    public function update(Request $request, PurchaseDetail $purchaseDetail)
     {
-        //
+        request()->validate(PurchaseDetail::$rules);
+
+        $purchaseDetail->update($request->all());
+
+        return redirect()->route('purchase-details.index')
+            ->with('success', 'PurchaseDetail updated successfully');
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\PurchaseDetail  $purchaseDetail
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
      */
-    public function destroy(PurchaseDetail $purchaseDetail)
+    public function destroy($id)
     {
-        //
+        $purchaseDetail = PurchaseDetail::find($id)->delete();
+
+        return redirect()->route('purchase-details.index')
+            ->with('success', 'PurchaseDetail deleted successfully');
     }
 }

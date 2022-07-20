@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Inventory;
-use App\Http\Requests\StoreInventoryRequest;
-use App\Http\Requests\UpdateInventoryRequest;
+use Illuminate\Http\Request;
 
+/**
+ * Class InventoryController
+ * @package App\Http\Controllers
+ */
 class InventoryController extends Controller
 {
     /**
@@ -15,7 +18,10 @@ class InventoryController extends Controller
      */
     public function index()
     {
-        //
+        $inventories = Inventory::paginate();
+
+        return view('inventory.index', compact('inventories'))
+            ->with('i', (request()->input('page', 1) - 1) * $inventories->perPage());
     }
 
     /**
@@ -25,62 +31,79 @@ class InventoryController extends Controller
      */
     public function create()
     {
-        //
+        $inventory = new Inventory();
+        return view('inventory.create', compact('inventory'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreInventoryRequest  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreInventoryRequest $request)
+    public function store(Request $request)
     {
-        //
+        request()->validate(Inventory::$rules);
+
+        $inventory = Inventory::create($request->all());
+
+        return redirect()->route('inventories.index')
+            ->with('success', 'Inventory created successfully.');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Inventory  $inventory
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Inventory $inventory)
+    public function show($id)
     {
-        //
+        $inventory = Inventory::find($id);
+
+        return view('inventory.show', compact('inventory'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Inventory  $inventory
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Inventory $inventory)
+    public function edit($id)
     {
-        //
+        $inventory = Inventory::find($id);
+
+        return view('inventory.edit', compact('inventory'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateInventoryRequest  $request
-     * @param  \App\Models\Inventory  $inventory
+     * @param  \Illuminate\Http\Request $request
+     * @param  Inventory $inventory
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateInventoryRequest $request, Inventory $inventory)
+    public function update(Request $request, Inventory $inventory)
     {
-        //
+        request()->validate(Inventory::$rules);
+
+        $inventory->update($request->all());
+
+        return redirect()->route('inventories.index')
+            ->with('success', 'Inventory updated successfully');
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Inventory  $inventory
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
      */
-    public function destroy(Inventory $inventory)
+    public function destroy($id)
     {
-        //
+        $inventory = Inventory::find($id)->delete();
+
+        return redirect()->route('inventories.index')
+            ->with('success', 'Inventory deleted successfully');
     }
 }

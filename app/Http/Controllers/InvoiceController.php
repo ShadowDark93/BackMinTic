@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
-use App\Http\Requests\StoreInvoiceRequest;
-use App\Http\Requests\UpdateInvoiceRequest;
+use Illuminate\Http\Request;
 
+/**
+ * Class InvoiceController
+ * @package App\Http\Controllers
+ */
 class InvoiceController extends Controller
 {
     /**
@@ -15,7 +18,10 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        //
+        $invoices = Invoice::paginate();
+
+        return view('invoice.index', compact('invoices'))
+            ->with('i', (request()->input('page', 1) - 1) * $invoices->perPage());
     }
 
     /**
@@ -25,62 +31,79 @@ class InvoiceController extends Controller
      */
     public function create()
     {
-        //
+        $invoice = new Invoice();
+        return view('invoice.create', compact('invoice'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreInvoiceRequest  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreInvoiceRequest $request)
+    public function store(Request $request)
     {
-        //
+        request()->validate(Invoice::$rules);
+
+        $invoice = Invoice::create($request->all());
+
+        return redirect()->route('invoices.index')
+            ->with('success', 'Invoice created successfully.');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Invoice  $invoice
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Invoice $invoice)
+    public function show($id)
     {
-        //
+        $invoice = Invoice::find($id);
+
+        return view('invoice.show', compact('invoice'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Invoice  $invoice
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Invoice $invoice)
+    public function edit($id)
     {
-        //
+        $invoice = Invoice::find($id);
+
+        return view('invoice.edit', compact('invoice'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateInvoiceRequest  $request
-     * @param  \App\Models\Invoice  $invoice
+     * @param  \Illuminate\Http\Request $request
+     * @param  Invoice $invoice
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateInvoiceRequest $request, Invoice $invoice)
+    public function update(Request $request, Invoice $invoice)
     {
-        //
+        request()->validate(Invoice::$rules);
+
+        $invoice->update($request->all());
+
+        return redirect()->route('invoices.index')
+            ->with('success', 'Invoice updated successfully');
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Invoice  $invoice
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
      */
-    public function destroy(Invoice $invoice)
+    public function destroy($id)
     {
-        //
+        $invoice = Invoice::find($id)->delete();
+
+        return redirect()->route('invoices.index')
+            ->with('success', 'Invoice deleted successfully');
     }
 }

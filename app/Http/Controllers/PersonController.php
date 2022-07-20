@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Person;
-use App\Http\Requests\StorePersonRequest;
-use App\Http\Requests\UpdatePersonRequest;
+use Illuminate\Http\Request;
 
+/**
+ * Class PersonController
+ * @package App\Http\Controllers
+ */
 class PersonController extends Controller
 {
     /**
@@ -15,7 +18,10 @@ class PersonController extends Controller
      */
     public function index()
     {
-        //
+        $people = Person::paginate();
+
+        return view('person.index', compact('people'))
+            ->with('i', (request()->input('page', 1) - 1) * $people->perPage());
     }
 
     /**
@@ -25,62 +31,79 @@ class PersonController extends Controller
      */
     public function create()
     {
-        //
+        $person = new Person();
+        return view('person.create', compact('person'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StorePersonRequest  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorePersonRequest $request)
+    public function store(Request $request)
     {
-        //
+        request()->validate(Person::$rules);
+
+        $person = Person::create($request->all());
+
+        return redirect()->route('people.index')
+            ->with('success', 'Person created successfully.');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Person  $person
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Person $person)
+    public function show($id)
     {
-        //
+        $person = Person::find($id);
+
+        return view('person.show', compact('person'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Person  $person
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Person $person)
+    public function edit($id)
     {
-        //
+        $person = Person::find($id);
+
+        return view('person.edit', compact('person'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdatePersonRequest  $request
-     * @param  \App\Models\Person  $person
+     * @param  \Illuminate\Http\Request $request
+     * @param  Person $person
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatePersonRequest $request, Person $person)
+    public function update(Request $request, Person $person)
     {
-        //
+        request()->validate(Person::$rules);
+
+        $person->update($request->all());
+
+        return redirect()->route('people.index')
+            ->with('success', 'Person updated successfully');
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Person  $person
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
      */
-    public function destroy(Person $person)
+    public function destroy($id)
     {
-        //
+        $person = Person::find($id)->delete();
+
+        return redirect()->route('people.index')
+            ->with('success', 'Person deleted successfully');
     }
 }
