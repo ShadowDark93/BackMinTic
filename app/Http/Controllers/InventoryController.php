@@ -18,21 +18,7 @@ class InventoryController extends Controller
      */
     public function index()
     {
-        $inventories = Inventory::paginate();
-
-        return view('inventory.index', compact('inventories'))
-            ->with('i', (request()->input('page', 1) - 1) * $inventories->perPage());
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $inventory = new Inventory();
-        return view('inventory.create', compact('inventory'));
+        return Inventory::all();
     }
 
     /**
@@ -47,8 +33,7 @@ class InventoryController extends Controller
 
         $inventory = Inventory::create($request->all());
 
-        return redirect()->route('inventories.index')
-            ->with('success', 'Inventory created successfully.');
+        return response()->json("Elemento creado correctamente", 200, $inventory);
     }
 
     /**

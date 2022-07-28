@@ -22,9 +22,9 @@ use App\Http\Controllers\PurchaseController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+/* Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
-});
+}); */
 
 Route::resource('client', ClientController::class)->names('client');
 

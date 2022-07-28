@@ -18,10 +18,7 @@ class PersonController extends Controller
      */
     public function index()
     {
-        $people = Person::paginate();
-
-        return view('person.index', compact('people'))
-            ->with('i', (request()->input('page', 1) - 1) * $people->perPage());
+        return Person::all();
     }
 
     /**
@@ -47,8 +44,7 @@ class PersonController extends Controller
 
         $person = Person::create($request->all());
 
-        return redirect()->route('people.index')
-            ->with('success', 'Person created successfully.');
+        return response()->json($person, 200);
     }
 
     /**
@@ -90,8 +86,7 @@ class PersonController extends Controller
 
         $person->update($request->all());
 
-        return redirect()->route('people.index')
-            ->with('success', 'Person updated successfully');
+        return response()->json($person, 200);
     }
 
     /**
@@ -103,7 +98,6 @@ class PersonController extends Controller
     {
         $person = Person::find($id)->delete();
 
-        return redirect()->route('people.index')
-            ->with('success', 'Person deleted successfully');
+        return response()->json($person, 200);
     }
 }
