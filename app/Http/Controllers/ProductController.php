@@ -18,10 +18,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::paginate();
-
-        return view('product.index', compact('products'))
-            ->with('i', (request()->input('page', 1) - 1) * $products->perPage());
+        return Product::all();
     }
 
     /**
@@ -47,8 +44,12 @@ class ProductController extends Controller
 
         $product = Product::create($request->all());
 
-        return redirect()->route('products.index')
-            ->with('success', 'Product created successfully.');
+        return response()->json ([
+            'status'=>200, 
+            'data'=>$product,
+            'msg'=> "Registro de producto exitoso",
+        ]);
+
     }
 
     /**

@@ -18,23 +18,10 @@ class PersonController extends Controller
      */
     public function index()
     {
-        $people = Person::paginate();
-
-        return view('person.index', compact('people'))
-            ->with('i', (request()->input('page', 1) - 1) * $people->perPage());
+        return Person::all();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $person = new Person();
-        return view('person.create', compact('person'));
-    }
-
+   
     /**
      * Store a newly created resource in storage.
      *
@@ -47,8 +34,11 @@ class PersonController extends Controller
 
         $person = Person::create($request->all());
 
-        return redirect()->route('people.index')
-            ->with('success', 'Person created successfully.');
+        return response()->json ([
+            'status'=>200, 
+            'data'=>$person,
+            'msg'=> "Registro de persona exitoso",
+        ]);
     }
 
     /**

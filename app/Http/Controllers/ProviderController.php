@@ -18,10 +18,7 @@ class ProviderController extends Controller
      */
     public function index()
     {
-        $providers = Provider::paginate();
-
-        return view('provider.index', compact('providers'))
-            ->with('i', (request()->input('page', 1) - 1) * $providers->perPage());
+        return Provider::all();
     }
 
     /**
@@ -47,8 +44,11 @@ class ProviderController extends Controller
 
         $provider = Provider::create($request->all());
 
-        return redirect()->route('providers.index')
-            ->with('success', 'Provider created successfully.');
+        return response()->json ([
+            'status'=>200, 
+            'data'=>$provider,
+            'msg'=> "Registro de proveedor exitoso",
+        ]);
     }
 
     /**

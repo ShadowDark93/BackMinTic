@@ -18,10 +18,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        $clients = Client::paginate();
-
-        return view('client.index', compact('clients'))
-            ->with('i', (request()->input('page', 1) - 1) * $clients->perPage());
+        return Client::all();
     }
 
     /**
@@ -47,8 +44,11 @@ class ClientController extends Controller
 
         $client = Client::create($request->all());
 
-        return redirect()->route('clients.index')
-            ->with('success', 'Client created successfully.');
+        return response()->json ([
+            'status'=>200, 
+            'data'=>$client,
+            'msg'=> "Registro de cliente exitoso",
+        ]);
     }
 
     /**
