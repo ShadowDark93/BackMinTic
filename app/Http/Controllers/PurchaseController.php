@@ -18,10 +18,7 @@ class PurchaseController extends Controller
      */
     public function index()
     {
-        $purchases = Purchase::paginate();
-
-        return view('purchase.index', compact('purchases'))
-            ->with('i', (request()->input('page', 1) - 1) * $purchases->perPage());
+        return Purchase::all();
     }
 
     /**
@@ -47,8 +44,11 @@ class PurchaseController extends Controller
 
         $purchase = Purchase::create($request->all());
 
-        return redirect()->route('purchases.index')
-            ->with('success', 'Purchase created successfully.');
+        return response()->json ([
+            'status'=>200, 
+            'data'=>$purchase,
+            'msg'=> "Registro de compra creado exitosamente",
+        ]);
     }
 
     /**

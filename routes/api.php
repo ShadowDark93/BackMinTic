@@ -28,18 +28,22 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::resource('client', ClientController::class)->names('client');
+Route::resource('client', ClientController::class)->names('client');  //Listo
 
-Route::resource('inventory', InventoryController::class)->names('inventory');
+Route::resource('inventory', InventoryController::class)->names('inventory'); //Listo
 
 Route::resource('invoice', InvoiceController::class)->names('invoice');
 
-Route::resource('person', PersonController::class)->names('person');
+Route::resource('person', PersonController::class)->names('person'); //Listo
 
-Route::resource('product', ProductController::class)->names('product');
+Route::resource('product', ProductController::class)->names('product'); //Listo
 
-Route::resource('provider', ProviderController::class)->names('provider');
+Route::resource('provider', ProviderController::class)->names('provider'); //Listo
 
 Route::resource('purchase', PurchaseController::class)->names('purchase');
 
 Route::resource('roles', RolController::class)->names('roles');
+
+Route::resource('invoicedetail', InvoiceDetail::class)->names('invoicedetail');
+
+Route::resource('purchasedetail', PurchaseDetail::class)->names('purchasedetail');

@@ -18,10 +18,7 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        $invoices = Invoice::paginate();
-
-        return view('invoice.index', compact('invoices'))
-            ->with('i', (request()->input('page', 1) - 1) * $invoices->perPage());
+        return Invoice::all();
     }
 
     /**
@@ -47,8 +44,11 @@ class InvoiceController extends Controller
 
         $invoice = Invoice::create($request->all());
 
-        return redirect()->route('invoices.index')
-            ->with('success', 'Invoice created successfully.');
+        return response()->json ([
+            'status'=>200, 
+            'data'=>$invoice,
+            'msg'=> "Registro de venta creado exitosamente",
+        ]);
     }
 
     /**
