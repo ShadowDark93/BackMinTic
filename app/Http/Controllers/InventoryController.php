@@ -33,7 +33,10 @@ class InventoryController extends Controller
 
         $inventory = Inventory::create($request->all());
 
-        return response()->json(200, $inventory);
+        return response()->json([
+            'status' => 200,
+            'data' => $inventory,
+        ]);
     }
 
     /**
@@ -46,7 +49,17 @@ class InventoryController extends Controller
     {
         $inventory = Inventory::find($id);
 
-        return $inventory;
+        if (isset($inventory)) {
+            return response()->json([
+                'status' => 200,
+                'data' => $inventory,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No inventory found',
+            ]);
+        }
     }
 
     /**
@@ -69,14 +82,28 @@ class InventoryController extends Controller
      * @param  Inventory $inventory
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Inventory $inventory)
+    public function update($id, Request $request)
     {
         request()->validate(Inventory::$rules);
 
-        $inventory->update($request->all());
+        $inventory = Inventory::find($id);
 
-        return redirect()->route('inventories.index')
-            ->with('success', 'Inventory updated successfully');
+        if (isset($inventory)) {
+            $inventory->id_producto = $request->id_producto;
+            $inventory->amount = $request->amount;
+            $inventory->price = $request->price;
+            $inventory->save();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $inventory,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No inventory found',
+            ]);
+        }
     }
 
     /**
@@ -86,9 +113,19 @@ class InventoryController extends Controller
      */
     public function destroy($id)
     {
-        $inventory = Inventory::find($id)->delete();
+        $inventory = Inventory::find($id);
+        if (isset($inventory)) {
+            $inventory = Inventory::find($id)->delete();
 
-        return redirect()->route('inventories.index')
-            ->with('success', 'Inventory deleted successfully');
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Eliminado de manera exitosa',
+            ]);
+        }else{
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No inventory found',
+            ]);
+        }
     }
 }
