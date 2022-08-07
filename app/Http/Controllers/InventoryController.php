@@ -33,7 +33,7 @@ class InventoryController extends Controller
 
         $inventory = Inventory::create($request->all());
 
-        return response()->json("Elemento creado correctamente", 200, $inventory);
+        return response()->json(200, $inventory);
     }
 
     /**
@@ -46,7 +46,7 @@ class InventoryController extends Controller
     {
         $inventory = Inventory::find($id);
 
-        return view('inventory.show', compact('inventory'));
+        return $inventory;
     }
 
     /**

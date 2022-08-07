@@ -10,6 +10,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\Api\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +26,16 @@ use App\Http\Controllers\PurchaseController;
 /* Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 }); */
+
+Route::post('register', [UserController::class, 'register'])->name('register');
+Route::post('login', [UserController::class, 'login'])->name('login');
+
+Route::group(['middleware' => ["auth:sanctum"]], function () {
+    //rutas
+    Route::get('user-profile', [UserController::class, 'userProfile'])->name('userProfile');
+    Route::get('logout', [UserController::class, 'logout'])->name('logout');
+});
+
 
 Route::resource('client', ClientController::class)->names('client');
 
