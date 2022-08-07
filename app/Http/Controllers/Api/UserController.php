@@ -7,9 +7,11 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
+
 class UserController extends Controller
 {
-    public function register(Request $request) {
+     public function register(Request $request) {
+
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',
@@ -51,7 +53,7 @@ class UserController extends Controller
             }else{
                 return response()->json([
                     "status" => 0,
-                    "msg" => "La password es incorrecta",
+                    "msg" => "El password es incorrecta",
                 ], 404);
             }
 
