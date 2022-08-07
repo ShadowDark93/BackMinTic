@@ -82,6 +82,7 @@ class PersonController extends Controller
         $person->update($request->all());
 
         return response()->json($person, 200);
+
     }
 
     /**

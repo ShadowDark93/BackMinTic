@@ -18,7 +18,7 @@ class InventoryController extends Controller
      */
     public function index()
     {
-       return Inventory::all();
+        return Inventory::all();
     }
 
     /**
@@ -32,11 +32,10 @@ class InventoryController extends Controller
         request()->validate(Inventory::$rules);
 
         $inventory = Inventory::create($request->all());
-
-        return response()->json ([
-            'status'=>200,
-            'data'=>$inventory,
-            'msg'=> "Registro de invetario exitoso",
+        return response()->json([
+            'status' => 200,
+            'data' => $inventory,
+            'msg' => "Registro de invetario exitoso",
         ]);
     }
 
@@ -48,6 +47,7 @@ class InventoryController extends Controller
      */
     public function show($id)
     {
+        return $id;
         $inventory = Inventory::find($id);
 
         if (isset($inventory)) {
@@ -60,6 +60,7 @@ class InventoryController extends Controller
                 'status' => 404,
                 'data' => 'Error... No inventory found',
             ]);
+
         }
     }
 
