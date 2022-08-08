@@ -44,10 +44,10 @@ class InventoryController extends Controller
 
         $inventory = Inventory::create($request->all());
 
-        return response()->json ([
-            'status'=>200,
-            'data'=>$inventory,
-            'msg'=> "Registro de invetario exitoso",
+        return response()->json([
+            'status' => 200,
+            'data' => $inventory,
+            'msg' => "Registro de invetario exitoso",
         ]);
     }
 
@@ -61,7 +61,6 @@ class InventoryController extends Controller
     {
         return $id;
         $inventory = Inventory::find($id);
-
         if (isset($inventory)) {
             return response()->json([
                 'status' => 200,
@@ -73,6 +72,7 @@ class InventoryController extends Controller
                 'data' => 'Error... No inventory found',
             ]);
         }
+
     }
 
     /**
@@ -85,9 +85,24 @@ class InventoryController extends Controller
     {
         $inventory = Inventory::find($id);
 
-        return view('inventory.edit', compact('inventory'));
-    }
+        if (isset($inventory)) {
+            $inventory->id_producto = $inventory->id_producto;
+            $inventory->amount = $inventory->amount;
+            $inventory->price = $inventory->price;
+            $inventory->save();
 
+            return response()->json([
+                'status' => 'success',
+                'data' => $inventory,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No inventory found',
+            ]);
+        }
+
+    }
     /**
      * Update the specified resource in storage.
      *
@@ -95,14 +110,28 @@ class InventoryController extends Controller
      * @param  Inventory $inventory
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Inventory $inventory)
+    public function update($id, Request $request)
     {
         request()->validate(Inventory::$rules);
+        $inventory = Inventory::find($id);
 
-        $inventory->update($request->all());
+        if (isset($inventory)) {
+            $inventory->id_producto = $request->id_producto;
+            $inventory->amount = $request->amount;
+            $inventory->price = $request->price;
+            $inventory->save();
 
-        return redirect()->route('inventories.index')
-            ->with('success', 'Inventory updated successfully');
+            return response()->json([
+                'status' => 'success',
+                'data' => $inventory,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No inventory found',
+            ]);
+        }
+
     }
 
     /**
@@ -112,9 +141,20 @@ class InventoryController extends Controller
      */
     public function destroy($id)
     {
-        $inventory = Inventory::find($id)->delete();
 
-        return redirect()->route('inventories.index')
-            ->with('success', 'Inventory deleted successfully');
+        $inventory = Inventory::find($id);
+        if (isset($inventory)) {
+            $inventory = Inventory::find($id)->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Eliminado de manera exitosa',
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No inventory found',
+            ]);
+        }
     }
 }

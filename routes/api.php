@@ -2,7 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Routing\Controllers\Controller;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\InventoryController;
