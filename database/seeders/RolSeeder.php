@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Rol;
 use Illuminate\Database\Seeder;
 
 class RolSeeder extends Seeder
@@ -14,17 +13,6 @@ class RolSeeder extends Seeder
      */
     public function run()
     {
-        $adm = new Rol();
-        $adm->description = 'Administrador';
-        $adm->save();
-
-        $comp = new Rol();
-        $comp->description = 'Administrador';
-        $comp->save();
-
-        $ven = new Rol();
-        $ven->description = 'Vendedor';
-        $ven->save();
-
-   }
+        //
+    }
 }

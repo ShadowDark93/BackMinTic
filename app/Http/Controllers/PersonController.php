@@ -21,7 +21,7 @@ class PersonController extends Controller
         return Person::all();
     }
 
-
+   
     /**
      * Store a newly created resource in storage.
      *
@@ -35,11 +35,10 @@ class PersonController extends Controller
         $person = Person::create($request->all());
 
         return response()->json ([
-            'status'=>200,
+            'status'=>200, 
             'data'=>$person,
             'msg'=> "Registro de persona exitoso",
         ]);
-
     }
 
     /**
@@ -82,7 +81,6 @@ class PersonController extends Controller
         $person->update($request->all());
 
         return response()->json($person, 200);
-
     }
 
     /**
@@ -94,6 +92,7 @@ class PersonController extends Controller
     {
         $person = Person::find($id)->delete();
 
-        return response()->json($person, 200);
+        return redirect()->route('people.index')
+            ->with('success', 'Person deleted successfully');
     }
 }

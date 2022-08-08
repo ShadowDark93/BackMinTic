@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Routing\Controllers\Controller;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\InventoryController;
@@ -20,6 +21,11 @@ Route::group(['middleware' => ["auth:sanctum"]], function () {
     Route::get('user-profile', [UserController::class, 'userProfile']);
     Route::get('logout', [UserController::class, 'logout']);
 });
+
+/*Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});*/
+
 
 Route::resource('client', ClientController::class)->names('client');  //Listo
 
@@ -40,3 +46,11 @@ Route::resource('roles', RolController::class)->names('roles');
 Route::resource('invoicedetail', InvoiceDetail::class)->names('invoicedetail');
 
 Route::resource('purchasedetail', PurchaseDetail::class)->names('purchasedetail');
+
+Route::post('/register', 'RegisterController@register');
+
+Route::post('/login', 'RegisterController@login');
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/me', 'RegisterController@me');
+});
