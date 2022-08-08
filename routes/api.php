@@ -2,14 +2,14 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PersonController;
+/* use App\Http\Controllers\PersonController;
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PurchaseController;
-use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\UserController; */
 
 //rutas
 Route::post('register', [UserController::class, 'register']);
