@@ -22,17 +22,6 @@ class InventoryController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $inventory = new Inventory();
-        return view('inventory.create', compact('inventory'));
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
@@ -59,7 +48,6 @@ class InventoryController extends Controller
      */
     public function show($id)
     {
-        return $id;
         $inventory = Inventory::find($id);
         if (isset($inventory)) {
             return response()->json([

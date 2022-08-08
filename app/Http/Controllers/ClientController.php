@@ -44,10 +44,10 @@ class ClientController extends Controller
 
         $client = Client::create($request->all());
 
-        return response()->json ([
-            'status'=>200, 
-            'data'=>$client,
-            'msg'=> "Registro de cliente exitoso",
+        return response()->json([
+            'status' => 200,
+            'data' => $client,
+            'msg' => "Registro de cliente exitoso",
         ]);
     }
 
@@ -61,7 +61,18 @@ class ClientController extends Controller
     {
         $client = Client::find($id);
 
-        return view('client.show', compact('client'));
+        if (isset($client)) {
+            return response()->json([
+                'status' => 200,
+                'data' => $client,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No inventory found',
+            ]);
+        }
+
     }
 
     /**
@@ -74,7 +85,21 @@ class ClientController extends Controller
     {
         $client = Client::find($id);
 
-        return view('client.edit', compact('client'));
+        if (isset($client)) {
+            $client->id_people = $client->id_people;
+            $client->type = $client->id_people;
+            $client->save();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $client,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No inventory found',
+            ]);
+        }
     }
 
     /**
