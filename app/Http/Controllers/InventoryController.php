@@ -60,7 +60,6 @@ class InventoryController extends Controller
                 'data' => 'Error... No inventory found',
             ]);
         }
-
     }
 
     /**
@@ -89,7 +88,6 @@ class InventoryController extends Controller
                 'data' => 'Error... No inventory found',
             ]);
         }
-
     }
     /**
      * Update the specified resource in storage.
@@ -119,7 +117,6 @@ class InventoryController extends Controller
                 'data' => 'Error... No inventory update.',
             ]);
         }
-
     }
 
     /**
@@ -135,25 +132,21 @@ class InventoryController extends Controller
 
             try {
                 $inventory = Inventory::find($id)->delete();
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Eliminado de manera exitosa',
+                ]);
             } catch (\Exception $e) {
                 return response()->json([
                     'status' => 403,
                     'data' => 'Error deleting product ' . $e->getMessage(),
                 ]);
             }
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Eliminado de manera exitosa',
-            ]);
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Eliminado de manera exitosa',
-            ]);
         } else {
             return response()->json([
                 'status' => 404,
-                'data' => 'Error... No inventory found',
+                'data' => 'Error... No Inventory found',
             ]);
         }
     }

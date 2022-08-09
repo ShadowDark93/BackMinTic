@@ -129,19 +129,27 @@ class ProviderController extends Controller
      */
     public function destroy($id)
     {
-
         $provider = Provider::find($id);
-        if (isset($provider)) {
-            $provider = Provider::find($id)->delete();
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Eliminado de manera exitosa',
-            ]);
+        if (isset($provider)) {
+
+            try {
+                $provider = Provider::find($id)->delete();
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Eliminado de manera exitosa',
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 403,
+                    'data' => 'Error deleting provider ' . $e->getMessage(),
+                ]);
+            }
         } else {
             return response()->json([
                 'status' => 404,
-                'data' => 'Error... No provider found',
+                'data' => 'Error... No Provider found',
             ]);
         }
     }

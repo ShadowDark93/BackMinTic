@@ -135,19 +135,27 @@ class ClientController extends Controller
      */
     public function destroy($id)
     {
-
         $client = Client::find($id);
-        if (isset($client)) {
-            $client = Client::find($id)->delete();
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Eliminado de manera exitosa',
-            ]);
+        if (isset($client)) {
+
+            try {
+                $client = Client::find($id)->delete();
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Eliminado de manera exitosa',
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 403,
+                    'data' => 'Error deleting client ' . $e->getMessage(),
+                ]);
+            }
         } else {
             return response()->json([
                 'status' => 404,
-                'data' => 'Error... No cliente found',
+                'data' => 'Error... No client found',
             ]);
         }
     }

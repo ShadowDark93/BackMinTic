@@ -131,15 +131,23 @@ class PersonController extends Controller
      */
     public function destroy($id)
     {
-
         $person = Person::find($id);
-        if (isset($person)) {
-            $person = Person::find($id)->delete();
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Eliminado de manera exitosa',
-            ]);
+        if (isset($person)) {
+
+            try {
+                $person = Person::find($id)->delete();
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Eliminado de manera exitosa',
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 403,
+                    'data' => 'Error deleting person ' . $e->getMessage(),
+                ]);
+            }
         } else {
             return response()->json([
                 'status' => 404,
