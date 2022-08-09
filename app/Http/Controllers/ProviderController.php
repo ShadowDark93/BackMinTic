@@ -21,17 +21,7 @@ class ProviderController extends Controller
         return Provider::all();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $provider = new Provider();
-        return view('provider.create', compact('provider'));
-    }
-
+    
     /**
      * Store a newly created resource in storage.
      *
@@ -60,8 +50,18 @@ class ProviderController extends Controller
     public function show($id)
     {
         $provider = Provider::find($id);
+        if (isset($provider)) {
+            return response()->json([
+                'status' => 200,
+                'data' => $provider,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No provider found',
+            ]);
+        }
 
-        return view('provider.show', compact('provider'));
     }
 
     /**
@@ -74,7 +74,22 @@ class ProviderController extends Controller
     {
         $provider = Provider::find($id);
 
-        return view('provider.edit', compact('provider'));
+        if (isset($provider)) {
+            $provider->id_people = $provider->id_people;
+            $provider->uen = $provider->uen;
+            $provider->save();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $provider,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No provider found',
+            ]);
+        }
+
     }
 
     /**
@@ -84,14 +99,27 @@ class ProviderController extends Controller
      * @param  Provider $provider
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Provider $provider)
+    public function update($id, Request $request)
     {
         request()->validate(Provider::$rules);
+        $provider = Provider::find($id);
 
-        $provider->update($request->all());
+        if (isset($provider)) {
+            $provider->id_people = $request->id_people;
+            $provider->uen = $request->uen;
+            $provider->save();
 
-        return redirect()->route('providers.index')
-            ->with('success', 'Provider updated successfully');
+            return response()->json([
+                'status' => 'success',
+                'data' => $provider,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No provider found',
+            ]);
+        }
+
     }
 
     /**
@@ -101,9 +129,20 @@ class ProviderController extends Controller
      */
     public function destroy($id)
     {
-        $provider = Provider::find($id)->delete();
 
-        return redirect()->route('providers.index')
-            ->with('success', 'Provider deleted successfully');
+        $provider = Provider::find($id);
+        if (isset($provider)) {
+            $provider = Provider::find($id)->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Eliminado de manera exitosa',
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No provider found',
+            ]);
+        }
     }
 }

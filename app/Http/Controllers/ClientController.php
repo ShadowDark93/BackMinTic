@@ -26,11 +26,7 @@ class ClientController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        $client = new Client();
-        return view('client.create', compact('client'));
-    }
+   
 
     /**
      * Store a newly created resource in storage.
@@ -69,7 +65,7 @@ class ClientController extends Controller
         } else {
             return response()->json([
                 'status' => 404,
-                'data' => 'Error... No inventory found',
+                'data' => 'Error... No client found',
             ]);
         }
 
@@ -97,7 +93,7 @@ class ClientController extends Controller
         } else {
             return response()->json([
                 'status' => 404,
-                'data' => 'Error... No inventory found',
+                'data' => 'Error... No client found',
             ]);
         }
     }
@@ -109,14 +105,27 @@ class ClientController extends Controller
      * @param  Client $client
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Client $client)
+    public function update($id, Request $request)
     {
         request()->validate(Client::$rules);
+        $client = Client::find($id);
 
-        $client->update($request->all());
+        if (isset($client)) {
+            $client->id_people = $request->id_people;
+            $client->type = $request->type;
+            $client->save();
 
-        return redirect()->route('clients.index')
-            ->with('success', 'Client updated successfully');
+            return response()->json([
+                'status' => 'success',
+                'data' => $client,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No client found',
+            ]);
+        }
+
     }
 
     /**
@@ -126,9 +135,20 @@ class ClientController extends Controller
      */
     public function destroy($id)
     {
-        $client = Client::find($id)->delete();
 
-        return redirect()->route('clients.index')
-            ->with('success', 'Client deleted successfully');
+        $client = Client::find($id);
+        if (isset($client)) {
+            $client = Client::find($id)->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Eliminado de manera exitosa',
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No cliente found',
+            ]);
+        }
     }
 }

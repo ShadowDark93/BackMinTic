@@ -21,6 +21,7 @@ class ProductController extends Controller
         return Product::all();
     }
 
+
     /**
      * Store a newly created resource in storage.
      *
@@ -50,7 +51,6 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::find($id);
-
         if (isset($product)) {
             return response()->json([
                 'status' => 200,
@@ -61,8 +61,9 @@ class ProductController extends Controller
                 'status' => 404,
                 'data' => 'Error... No product found',
             ]);
-
         }
+
+
     }
 
     /**
@@ -72,10 +73,10 @@ class ProductController extends Controller
      * @param  Product $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update($id, Request $request)
     {
         request()->validate(Product::$rules);
-
+        $product = Product::find($id);
         $product = Product::find($request->id);
 
         if (isset($product)) {
@@ -85,10 +86,12 @@ class ProductController extends Controller
             return response()->json([
                 'status' => 200,
                 'data' => $product,
+
             ]);
         } else {
             return response()->json([
                 'status' => 404,
+
                 'data' => 'Error... No product updated.',
             ]);
         }
@@ -106,16 +109,17 @@ class ProductController extends Controller
         if (isset($product)) {
             try {
                 $product = Product::find($id)->delete();
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Eliminado de manera exitosa',
+                ]);
             } catch (\Exception $e) {
                 return response()->json([
                     'status' => 403,
                     'data' => 'Error deleting product '. $e->getMessage(),
                 ]);
             }
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Eliminado de manera exitosa',
-            ]);
+            
         } else {
             return response()->json([
                 'status' => 404,

@@ -50,8 +50,18 @@ class PersonController extends Controller
     public function show($id)
     {
         $person = Person::find($id);
+        if (isset($person)) {
+            return response()->json([
+                'status' => 200,
+                'data' => $person,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No person found',
+            ]);
+        }
 
-        return view('person.show', compact('person'));
     }
 
     /**
@@ -64,7 +74,23 @@ class PersonController extends Controller
     {
         $person = Person::find($id);
 
-        return view('person.edit', compact('person'));
+        if (isset($person)) {
+            $person->name = $person->name;
+            $person->address = $person->address;
+            $person->phone = $person->phone;
+            $person->save();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $person,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No person found',
+            ]);
+        }
+
     }
 
     /**
@@ -74,13 +100,28 @@ class PersonController extends Controller
      * @param  Person $person
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Person $person)
+    public function update($id, Request $request)
     {
         request()->validate(Person::$rules);
+        $person = Person::find($id);
 
-        $person->update($request->all());
+        if (isset($person)) {
+            $person->name = $request->name;
+            $person->address = $request->address;
+            $person->phone = $request->phone;
+            $person->save();
 
-        return response()->json($person, 200);
+            return response()->json([
+                'status' => 'success',
+                'data' => $person,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No person found',
+            ]);
+        }
+
     }
 
     /**
@@ -90,9 +131,20 @@ class PersonController extends Controller
      */
     public function destroy($id)
     {
-        $person = Person::find($id)->delete();
 
-        return redirect()->route('people.index')
-            ->with('success', 'Person deleted successfully');
+        $person = Person::find($id);
+        if (isset($person)) {
+            $person = Person::find($id)->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Eliminado de manera exitosa',
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No person found',
+            ]);
+        }
     }
 }
