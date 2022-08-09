@@ -31,11 +31,11 @@ Route::resource('person', PersonController::class)->names('person'); //Listo
 
 Route::resource('product', ProductController::class)->names('product'); //Listo
 
-Route::resource('provider', ProviderController::class)->names('provider'); //Listo
+Route::resource('provider', ProviderController::class)->names('provider')->middleware('auth:sanctum'); //Listo
 
-Route::resource('purchase', PurchaseController::class)->names('purchase');
+/* Route::resource('purchase', PurchaseController::class)->names('purchase'); */
 
-Route::resource('roles', RolController::class)->names('roles');
+/* Route::resource('roles', RolController::class)->names('roles'); */
 
 /* Route::resource('invoicedetail', InvoiceDetail::class)->names('invoicedetail'); */
 
