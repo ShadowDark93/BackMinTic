@@ -22,17 +22,6 @@ class ProductController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $product = new Product();
-        return view('product.create', compact('product'));
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
@@ -44,10 +33,10 @@ class ProductController extends Controller
 
         $product = Product::create($request->all());
 
-        return response()->json ([
-            'status'=>200, 
-            'data'=>$product,
-            'msg'=> "Registro de producto exitoso",
+        return response()->json([
+            'status' => 200,
+            'data' => $product,
+            'msg' => "Registro de producto exitoso",
         ]);
 
     }
@@ -62,20 +51,18 @@ class ProductController extends Controller
     {
         $product = Product::find($id);
 
-        return view('product.show', compact('product'));
-    }
+        if (isset($product)) {
+            return response()->json([
+                'status' => 200,
+                'data' => $product,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No product found',
+            ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        $product = Product::find($id);
-
-        return view('product.edit', compact('product'));
+        }
     }
 
     /**
@@ -89,10 +76,22 @@ class ProductController extends Controller
     {
         request()->validate(Product::$rules);
 
-        $product->update($request->all());
+        $product = Product::find($request->id);
 
-        return redirect()->route('products.index')
-            ->with('success', 'Product updated successfully');
+        if (isset($product)) {
+            $product->name = $request->name;
+            $product->description = $request->description;
+            $product->save();
+            return response()->json([
+                'status' => 200,
+                'data' => $product,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No product updated.',
+            ]);
+        }
     }
 
     /**
@@ -102,9 +101,27 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        $product = Product::find($id)->delete();
+        $product = Product::find($id);
 
-        return redirect()->route('products.index')
-            ->with('success', 'Product deleted successfully');
+        if (isset($product)) {
+            try {
+                $product = Product::find($id)->delete();
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 403,
+                    'data' => 'Error deleting product '. $e->getMessage(),
+                ]);
+            }
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Eliminado de manera exitosa',
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No product found',
+            ]);
+        }
+
     }
 }

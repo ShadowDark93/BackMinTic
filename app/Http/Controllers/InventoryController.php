@@ -5,10 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Inventory;
 use Illuminate\Http\Request;
 
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-
-
 /**
  * Class InventoryController
  * @package App\Http\Controllers
@@ -120,7 +116,7 @@ class InventoryController extends Controller
         } else {
             return response()->json([
                 'status' => 404,
-                'data' => 'Error... No inventory found',
+                'data' => 'Error... No inventory update.',
             ]);
         }
 
@@ -133,10 +129,22 @@ class InventoryController extends Controller
      */
     public function destroy($id)
     {
-
         $inventory = Inventory::find($id);
+
         if (isset($inventory)) {
-            $inventory = Inventory::find($id)->delete();
+
+            try {
+                $inventory = Inventory::find($id)->delete();
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 403,
+                    'data' => 'Error deleting product ' . $e->getMessage(),
+                ]);
+            }
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Eliminado de manera exitosa',
+            ]);
 
             return response()->json([
                 'status' => 'success',
