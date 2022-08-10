@@ -28,7 +28,7 @@ class Invoice extends Model
 		'id_user' => 'required',
 		'id_client' => 'required',
 		'date' => 'required',
-		'   ' => 'required',
+		'total' => 'required',
     ];
 
     protected $perPage = 20;

@@ -18,21 +18,7 @@ class InvoiceDetailController extends Controller
      */
     public function index()
     {
-        $invoiceDetails = InvoiceDetail::paginate();
-
-        return view('invoice-detail.index', compact('invoiceDetails'))
-            ->with('i', (request()->input('page', 1) - 1) * $invoiceDetails->perPage());
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $invoiceDetail = new InvoiceDetail();
-        return view('invoice-detail.create', compact('invoiceDetail'));
+        return InvoiceDetail::all();
     }
 
     /**
@@ -47,8 +33,11 @@ class InvoiceDetailController extends Controller
 
         $invoiceDetail = InvoiceDetail::create($request->all());
 
-        return redirect()->route('invoice-details.index')
-            ->with('success', 'InvoiceDetail created successfully.');
+        return response()->json([
+            'status' => 200,
+            'data' => $invoiceDetail,
+            'msg' => "Registro de Invoice Detail exitoso",
+        ]);
     }
 
     /**
@@ -60,8 +49,17 @@ class InvoiceDetailController extends Controller
     public function show($id)
     {
         $invoiceDetail = InvoiceDetail::find($id);
-
-        return view('invoice-detail.show', compact('invoiceDetail'));
+        if (isset($invoiceDetail)) {
+            return response()->json([
+                'status' => 200,
+                'data' => $invoiceDetail,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No invoice detail found',
+            ]);
+        }
     }
 
     /**
@@ -74,7 +72,23 @@ class InvoiceDetailController extends Controller
     {
         $invoiceDetail = InvoiceDetail::find($id);
 
-        return view('invoice-detail.edit', compact('invoiceDetail'));
+        if (isset($invoiceDetail)) {
+            $invoiceDetail->id_invoice = $invoiceDetail->id_invoice;
+            $invoiceDetail->id_product = $invoiceDetail->id_product;
+            $invoiceDetail->amount = $$invoiceDetail->amount;
+            $invoiceDetail->total = $$invoiceDetail->total;
+            $invoiceDetail->save();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $invoiceDetail,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No invoice details found',
+            ]);
+        }
     }
 
     /**
@@ -84,14 +98,28 @@ class InvoiceDetailController extends Controller
      * @param  InvoiceDetail $invoiceDetail
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, InvoiceDetail $invoiceDetail)
+    public function update($id, Request $request)
     {
         request()->validate(InvoiceDetail::$rules);
+        $invoiceDetail = InvoiceDetail::find($id);
 
-        $invoiceDetail->update($request->all());
+        if (isset($invoiceDetail)) {
+            $invoiceDetail->id_invoice = $invoiceDetail->id_invoice;
+            $invoiceDetail->id_product = $invoiceDetail->id_product;
+            $invoiceDetail->amount = $$invoiceDetail->amount;
+            $invoiceDetail->total = $$invoiceDetail->total;
+            $invoiceDetail->save();
 
-        return redirect()->route('invoice-details.index')
-            ->with('success', 'InvoiceDetail updated successfully');
+            return response()->json([
+                'status' => 'success',
+                'data' => $invoiceDetail,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No invoice details update.',
+            ]);
+        }
     }
 
     /**
@@ -101,9 +129,28 @@ class InvoiceDetailController extends Controller
      */
     public function destroy($id)
     {
-        $invoiceDetail = InvoiceDetail::find($id)->delete();
+        $invoiceDetail = InvoiceDetail::find($id);
 
-        return redirect()->route('invoice-details.index')
-            ->with('success', 'InvoiceDetail deleted successfully');
+        if (isset($invoiceDetail)) {
+
+            try {
+                $invoiceDetail = InvoiceDetail::find($id)->delete();
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Eliminado de manera exitosa',
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 403,
+                    'data' => 'Error deleting Invoice Details ' . $e->getMessage(),
+                ]);
+            }
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No Invoice Details found',
+            ]);
+        }
     }
 }

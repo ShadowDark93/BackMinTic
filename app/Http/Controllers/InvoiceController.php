@@ -22,17 +22,6 @@ class InvoiceController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $invoice = new Invoice();
-        return view('invoice.create', compact('invoice'));
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
@@ -60,8 +49,17 @@ class InvoiceController extends Controller
     public function show($id)
     {
         $invoice = Invoice::find($id);
-
-        return view('invoice.show', compact('invoice'));
+        if (isset($invoice)) {
+            return response()->json([
+                'status' => 200,
+                'data' => $invoice,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No invoice found',
+            ]);
+        }
     }
 
     /**
@@ -74,7 +72,23 @@ class InvoiceController extends Controller
     {
         $invoice = Invoice::find($id);
 
-        return view('invoice.edit', compact('invoice'));
+        if (isset($invoice)) {
+            $invoice->id_user = $invoice->id_user;
+            $invoice->id_client = $invoice->id_client;
+            $invoice->date = $invoice->date;
+            $invoice->total = $invoice->total;
+            $invoice->save();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $invoice,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No invoice found',
+            ]);
+        }
     }
 
     /**
@@ -84,14 +98,28 @@ class InvoiceController extends Controller
      * @param  Invoice $invoice
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Invoice $invoice)
+    public function update($id, Request $request)
     {
         request()->validate(Invoice::$rules);
+        $invoice = Invoice::find($id);
 
-        $invoice->update($request->all());
+        if (isset($inventory)) {
+            $invoice->id_user = $invoice->id_user;
+            $invoice->id_client = $invoice->id_client;
+            $invoice->date = $invoice->date;
+            $invoice->total = $invoice->total;
+            $invoice->save();
 
-        return redirect()->route('invoices.index')
-            ->with('success', 'Invoice updated successfully');
+            return response()->json([
+                'status' => 'success',
+                'data' => $invoice,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No invoice update.',
+            ]);
+        }
     }
 
     /**
@@ -101,9 +129,28 @@ class InvoiceController extends Controller
      */
     public function destroy($id)
     {
-        $invoice = Invoice::find($id)->delete();
+        $invoice = Invoice::find($id);
 
-        return redirect()->route('invoices.index')
-            ->with('success', 'Invoice deleted successfully');
+        if (isset($invoice)) {
+
+            try {
+                $invoice = Invoice::find($id)->delete();
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Eliminado de manera exitosa',
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 403,
+                    'data' => 'Error deleting product ' . $e->getMessage(),
+                ]);
+            }
+        } else {
+            return response()->json([
+                'status' => 404,
+                'data' => 'Error... No Invoice found',
+            ]);
+        }
     }
 }

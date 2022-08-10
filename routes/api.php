@@ -37,6 +37,6 @@ Route::resource('purchase', PurchaseController::class)->names('purchase');
 
 Route::resource('roles', RolController::class)->names('roles');
 
-/* Route::resource('invoicedetail', InvoiceDetail::class)->names('invoicedetail'); */
+Route::resource('invoicedetail', InvoiceDetail::class)->names('invoicedetail');
 
-/* Route::resource('purchasedetail', PurchaseDetail::class)->names('purchasedetail'); */
+Route::resource('purchasedetail', PurchaseDetail::class)->names('purchasedetail');

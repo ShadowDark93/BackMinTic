@@ -18,23 +18,10 @@ class RolController extends Controller
      */
     public function index()
     {
-        $rols = Rol::paginate();
-
-        return view('rol.index', compact('rols'))
-            ->with('i', (request()->input('page', 1) - 1) * $rols->perPage());
+        return Rol::all();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $rol = new Rol();
-        return view('rol.create', compact('rol'));
-    }
-
+    
     /**
      * Store a newly created resource in storage.
      *
@@ -45,10 +32,13 @@ class RolController extends Controller
     {
         request()->validate(Rol::$rules);
 
-        $rol = Rol::create($request->all());
+        $inventory = Rol::create($request->all());
 
-        return redirect()->route('rols.index')
-            ->with('success', 'Rol created successfully.');
+        return response()->json([
+            'status' => 200,
+            //'data' => $rol,
+            'msg' => "Registro de rol exitoso",
+        ]);
     }
 
     /**
