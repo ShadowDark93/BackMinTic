@@ -31,7 +31,7 @@ Route::resource('person', PersonController::class)->names('person'); //Listo
 
 Route::resource('product', ProductController::class)->names('product'); //Listo
 
-Route::resource('provider', ProviderController::class)->names('provider')->middleware('auth:sanctum'); //Listo
+Route::resource('provider', ProviderController::class)->names('provider'); //Listo //->middleware('auth:sanctum')
 
 /* Route::resource('purchase', PurchaseController::class)->names('purchase'); */
 
